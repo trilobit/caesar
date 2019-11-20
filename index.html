@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Caesar Encryption Algorithm</title>
+    <style>
+        html, body {
+            height: 100%;
+        }
+        body {
+            height: 100%;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+        .form {
+            height: auto;
+            border: 3px solid black;
+            background-color: #eeeeee;
+            border-radius: 10px;
+            padding: 20px;
+        }
+        h3 {
+            font-size: 16px;
+            text-align: center;
+            margin: 5px 0;
+        }
+        p {
+            font-size: 12px;
+            margin: 5px 0 0 0;
+            text-align: right;
+        }
+        label {
+            font-size: 12px;
+            display: block;
+            margin: 10px 0 0 0;
+        }
+        .text-field {
+            display: block;
+            width: 100%;
+            border: 1px solid black;
+            padding: 3px;
+        }
+        .button {
+            display: block;
+            margin: 5px auto;
+            border: 1px solid black;
+            border-radius: 5px;
+            padding: 5px 30px;
+        }
+    </style>
+    <script>
+        const Caesar = (alphabet, key, shift) => {
+            alphabet = alphabet.toUpperCase().split('');
+            key = key.toUpperCase().split('');
+            let shiftedAlphabet = [];
+            let indexOut = shift;
+
+            function addSymbol(symbol) {
+                if (shiftedAlphabet.includes(symbol)) {
+                    return false;
+                }
+                shiftedAlphabet[indexOut] = symbol;
+                indexOut++;
+                if (indexOut >= alphabet.length) {
+                    indexOut -= alphabet.length;
+                }
+                return true;
+            }
+
+            for (let i = 0; i < key.length; i++) {
+                addSymbol(key[i]);
+            }
+            for (let i = 0; i < alphabet.length; i++) {
+                addSymbol(alphabet[i]);
+            }
+
+            return {
+                encrypt: (message) => {
+                    let result = '';
+                    message.toUpperCase().split('').forEach((sym) => {
+                        let index = alphabet.indexOf(sym);
+                        if (index === -1) {
+                            result += sym;
+                            return;
+                        }
+                        result += shiftedAlphabet[index];
+                    });
+                    return result;
+                },
+
+                decrypt: (data) => {
+                    let result = '';
+                    data.toUpperCase().split('').forEach((sym) => {
+                        let index = shiftedAlphabet.indexOf(sym);
+                        if (index === -1) {
+                            result += sym;
+                            return;
+                        }
+                        result += alphabet[index];
+                    });
+                    return result;
+                },
+            };
+        };
+        window.onload = () => {
+            const $alphabet = document.getElementById('alphabet');
+            const $key = document.getElementById('key');
+            const $shift = document.getElementById('shift');
+            const $message = document.getElementById('message');
+            const $encrypted = document.getElementById('encrypted');
+            const $decrypted = document.getElementById('decrypted');
+
+            $alphabet.value = 'АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЬЫЪЭЮЯ0123456789';
+            $key.value = 'КРИПТА';
+            $shift.value = 7;
+
+            document.getElementById('encrypt').onclick = () => {
+                const msg = Caesar(
+                    $alphabet.value,
+                    $key.value,
+                    $shift.value
+                ).encrypt($message.value);
+
+                $encrypted.value = msg;
+            };
+            document.getElementById('decrypt').onclick = () => {
+                const msg = Caesar(
+                    $alphabet.value,
+                    $key.value,
+                    $shift.value
+                ).decrypt($encrypted.value);
+
+                $decrypted.value = msg;
+            };
+        };
+    </script>
+</head>
+<body>
+    <div class="form">
+        <div class="info">
+            <h3>Шифрование сообщений по алгоритму Цезаря</h3>
+            <p>Выполнил студент 4 курса: Савчук Александр Юрьевич</p>
+            <p>Специальность: 27.03.04-4з</p>
+            <p>Версия: 1.0.0</p>
+            <hr />
+        </div>
+        <label for="alphabet">Алфавит для шифрования</label>
+        <input type="text" id="alphabet" value="" class="text-field" />
+        <label for="key">Ключевое слово</label>
+        <input type="text" id="key" value="" class="text-field" />
+        <label for="shift">Сдвиговый ключ</label>
+        <input type="text" id="shift" value="" class="text-field" />
+        <label for="message">Исходное сообщение</label>
+        <input type="text" id="message" value="" class="text-field" />
+        <button id="encrypt" class="button">Зашифровать</button>
+        <label for="encrypted">Шифрованное сообщение</label>
+        <input type="text" id="encrypted" value="" class="text-field" />
+        <button id="decrypt" class="button">Расшифровать</button>
+        <label for="decrypted">Расшифрованное сообщение</label>
+        <input type="text" id="decrypted" value="" class="text-field" />
+    </div>
+</body>
+</html>
